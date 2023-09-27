@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".AboutActivity"
+    android:gravity="top|center">
+
+    <TextView
+        android:id="@+id/tSmogometrAbout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/smogometr"
+        android:textSize="50sp"
+        android:layout_marginBottom="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tSmogometrAbout"
+        app:layout_constraintVertical_bias="1.0">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tAbout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:scrollbars="vertical"
+                android:text="@string/projekt_zak_ada_stworzenie_przeno_nego_miernika_poziomu_zanieczyszcze_komunikuj_cego_si_z_telefonem_wraz_z_aplikacj_umo_liwiaj_c_analiz_danych_i_baz_danych_pozwalaj_c_por_wnywa_dane_z_serii_urz_dze_npowodem_zainteresowania_tematem_by_o_du_o_zanieczyszczenie_powietrza_w_mojej_rodzinnej_miejscowo_ci_w_kt_rej_brak_jest_jakichkolwiek_stacji_pomiarowych_zrzut_ekranu_poni_ej_a_tak_e_widoczne_zanieczyszczenie_w_obr_bie_zakorkowanych_ulic_w_krakowie_o_ile_w_ma_ych_gminach_i_na_terenach_wiejskich_za_znaczn_wi_kszo_zanieczyszcze_odpowiada_niska_emisja_prawie_po_owa_ca_kowitej_emisji_py_u_zawieszonego_i_ok_91_wielopier_cieniowych_w_glowodor_w_aromatycznych_m_in_benzo_a_piernu_1_o_tyle_w_miastach_przewa_a_zanieczyszczenie_z_transportu_zar_wno_publicznego_jak_i_prywatnego_wed_ug_raportu_nik_w_du_ych_miastach_to_nawet_75_st_enia_redniorocznego_dwutlenku_azotu_2_ponadto_w_przypadku_czujnik_w_mierz_cy_poziom_zanieczyszczenia_py_ami_zawieszonymi_w_krakowie_ich_ilo_jest_znaczna_tak_w_przypadku_czujnik_w_mierz_cych_poziomy_tlenk_w_azotu_i_siarki_ich_liczno_jest_minimalna_zrzuty_ekranu_poni_ej_problemem_jest_tak_e_brak_odpowiedniej_ilo_ci_czujnik_w_w_pobli_u_ulic_o_zwi_kszonym_ruchu_samochodowym_nprzeno_ny_smogometr_zapewni_nie_tylko_dok_adniejsze_miejscowe_pomiary_zanieczyszcze_ale_umo_liwi_tak_e_pomiar_zanieczyszcze_w_miejscu_pracy_czy_nauki_wed_ug_plan_w_smogometr_ma_by_przeno_ny_i_jak_najmniejszy_tak_aby_mo_na_go_by_o_przypi_do_ubrania_czy_plecaka_po_czenie_z_aplikacj_i_danymi_gps_umo_liwi_nanoszenie_danych_pomiarowych_na_map_i_zwi_kszenie_wiadomo_ci_u_ytkownik_w_o_blisko_ci_zanieczyszcze_poprzez_nanoszenie_punkt_w_mo_liwe_b_dzie_wyznaczanie_czystszych_tras_przemieszczania_si_jako_urz_dzenie_przeno_ne_bez_konieczno_ci_monta_u_b_dzie_m_g_dokonywa_pomiar_w_w_wielu_miejscach_w_przeciwie_stwie_do_miernik_w_stacjonarnych_nponi_ej_zaprezentowane_zosta_y_zrzuty_ekranu_z_aplikacji_airly_obrazuj_ce_sie_czujnik_w_pod_czonych_do_serwisu_pierwszy_zrzut_w_r_dzinach_i_okolicy_dotyczy_wszystkich_rodzaj_w_czujnik_w_natomiast_kolejne_pokazuj_ce_krak_w_uwzgl_dniaj_czujniki_mierz_ce_dane_zanieczyszczenie"
+                android:textAlignment="center"
+                android:textSize="20sp" />
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src = "@drawable/about_screen1"
+                android:contentDescription="@string/pm_no2_so2" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/pm_no2_so2_t"
+                android:textSize="16sp"
+                android:layout_gravity="center"/>
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src = "@drawable/about_screen2"
+                android:contentDescription="@string/pm_t" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/pm"
+                android:textSize="16sp"
+                android:layout_gravity="center"/>
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src = "@drawable/about_screen3"
+                android:contentDescription="@string/no2_t" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/no2"
+                android:textSize="16sp"
+                android:layout_gravity="center"/>
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src = "@drawable/about_screen4"
+                android:contentDescription="@string/so2_t" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/so2"
+                android:textSize="16sp"
+                android:layout_gravity="center"/>
+
+            <TextView
+                android:id="@+id/link1TextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/_1_https_polskialarmsmogowy_pl_smog_skad_sie_bierze_smog"
+                android:autoLink="web"
+                android:textSize="16sp"
+                android:textColor="#0000FF"
+                android:clickable="true"
+                android:onClick="open1Website" />
+
+            <TextView
+                android:id="@+id/link2TextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/_2_https_www_nik_gov_pl_aktualnosci_zabojczy_smog_z_samochodowych_spalin_html"
+                android:autoLink="web"
+                android:textSize="16sp"
+                android:textColor="#0000FF"
+                android:clickable="true"
+                android:onClick="open1Website" />
+        </LinearLayout>
+
+    </ScrollView>
+
+
+
+</LinearLayout>
