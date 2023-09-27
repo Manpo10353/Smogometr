@@ -28,19 +28,19 @@ Poniżej zaprezentowane zostały zrzuty ekranu z aplikacji Airly obrazujące sie
 podłączonych do serwisu. Pierwszy zrzut w Rędzinach i okolicy dotyczy wszystkich rodzajów czujników, 
 natomiast kolejne pokazujące Kraków uwzględniają czujniki mierzące dane zanieczyszczenie.
 
-![about_screen1](https://github.com/Manpo10353/Smogometr/assets/97735986/af4ac422-1153-43db-b83c-6946d6091f1d)
+![about_screen1](Photo/about_screen1.jpg)
 
 PM, NO2, SO2
 
-![about_screen2](https://github.com/Manpo10353/Smogometr/assets/97735986/3119bc64-9e51-497f-bfb1-f091b842bd4b)
+![about_screen1](Photo/about_screen2.jpg)
 
 PM
 
-![about_screen3](https://github.com/Manpo10353/Smogometr/assets/97735986/45665b6d-8bcc-46cd-a755-24da1e83b82e)
+![about_screen1](Photo/about_screen3.jpg)
 
 NO2
 
-![about_screen4](https://github.com/Manpo10353/Smogometr/assets/97735986/8ff83c8e-a83f-4b76-a664-e54ef76c83f9)
+![about_screen1](Photo/about_screen4.jpg)
 
 SO2
 
