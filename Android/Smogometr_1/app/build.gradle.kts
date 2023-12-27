@@ -1,7 +1,7 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
-
+    id("com.google.secrets_gradle_plugin") version "0.4"
 }
 
 android {
@@ -52,14 +52,20 @@ android {
 
 dependencies {
 
+    // maps compose
+    implementation ("com.google.maps.android:maps-compose:2.11.5")
+
+    // google map services
+    implementation ("com.google.android.gms:play-services-maps:18.1.0")
+    implementation ("com.google.android.gms:play-services-location:21.0.1")
+
+    // google maps utils
+    implementation ("com.google.maps.android:android-maps-utils:3.4.0")
+
     implementation("androidx.core:core-ktx:1.9.0")
     implementation("androidx.core:core:1.9.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.5.1")
     implementation("androidx.activity:activity-compose:1.6.1")
-
-
-
-
     implementation("com.google.maps.android:maps-compose:4.3.0")
     implementation("androidx.compose.material:material-icons-extended")
     implementation("androidx.navigation:navigation-compose:2.4.0-alpha10")
