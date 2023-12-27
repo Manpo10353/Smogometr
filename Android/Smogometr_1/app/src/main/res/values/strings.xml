@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Smogometr</string>
+    <string name="sensors">Czujniki</string>
+    <string name="measurmement">Pomiar</string>
+    <string name="settings">Ustawienia</string>
+    <string name="map">Mapa</string>
+    <string name="about">O aplikacji</string>
+    <string name="smogometr">Smogometr</string>
+</resources>

@@ -2,13 +2,12 @@ package com.ms.smogometr
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.ms.smogometr.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
-    private val mainVM by viewModels<MainViewModel>()
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {

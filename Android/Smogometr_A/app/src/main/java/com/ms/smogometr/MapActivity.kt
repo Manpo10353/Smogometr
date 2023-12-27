@@ -5,9 +5,11 @@ import com.mapbox.maps.MapView
 import com.mapbox.maps.Style
 import com.ms.smogometr.databinding.ActivityMapBinding
 
-var mapView: MapView? = null
+
 
 class MapActivity : AppCompatActivity(){
+
+    private var mapView: MapView? = null
 
     private lateinit var binding: ActivityMapBinding
 
