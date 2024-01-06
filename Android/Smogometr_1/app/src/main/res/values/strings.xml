@@ -6,4 +6,10 @@
     <string name="map">Mapa</string>
     <string name="about">O aplikacji</string>
     <string name="smogometr">Smogometr</string>
+    <string name="static_measurement">Pomiar statyczny</string>
+    <string name="dynamic_measurement">Pomiar dynamiczny</string>
+    <string name="rozpocznij_pomiar">Rozpocznij pomiar</string>
+    <string name="pomiar">Pomiar %1$s</string>
+    <string name="distance_betwen_sensors">Odległość pomiędzy kolejnymi pomiarami w metrach</string>
+    <string name="start_meausure">Rozpocznij pomiar</string>
 </resources>
