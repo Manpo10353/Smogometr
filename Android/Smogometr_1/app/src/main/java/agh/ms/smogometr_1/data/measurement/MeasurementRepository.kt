@@ -9,4 +9,6 @@ interface MeasurementRepository {
 
     //fun getMeasurementsBetweenHours(date: LocalDate, timeStart: LocalTime, timeEnd: LocalTime): Flow<List<Measurement>>
     fun getMeasurementsBetweenHours(): Flow<List<Measurement>>
+
+    fun deleteAllMeasurements()
 }

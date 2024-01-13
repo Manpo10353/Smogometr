@@ -1,6 +1,7 @@
 package agh.ms.smogometr_1.data.measurement
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -13,6 +14,9 @@ interface MeasurementDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertMeasurement(measurement: Measurement)
+
+    @Query("DELETE FROM measurements")
+    fun deleteAllMeasurements()
 
     @Query("SELECT * FROM measurements ")//WHERE date = :date AND time <= :timeStart AND time >= :timeEnd")
     fun getMeasurementsBetweenHours(): Flow<List<Measurement>>

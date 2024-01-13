@@ -11,5 +11,6 @@ class SmogometrApplication : Application(){
     override fun onCreate() {
         super.onCreate()
         container = AppDataContainer(this)
+
     }
 }

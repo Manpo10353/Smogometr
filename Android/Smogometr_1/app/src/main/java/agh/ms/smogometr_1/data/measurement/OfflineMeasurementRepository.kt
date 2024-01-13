@@ -20,7 +20,11 @@ class OfflineMeasurementRepository(
         //timeEnd
         )
 
+    override fun deleteAllMeasurements() = measurementDao.deleteAllMeasurements()
+
     override suspend fun insertMeasurment(measurement: Measurement) = withContext(Dispatchers.IO) {
         measurementDao.insertMeasurement(measurement)
     }
+
+
 }

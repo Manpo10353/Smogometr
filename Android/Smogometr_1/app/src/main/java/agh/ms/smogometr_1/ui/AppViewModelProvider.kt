@@ -12,10 +12,10 @@ object AppViewModelProvider {
     val Factory = viewModelFactory {
         // Initializer for ItemEditViewModel
         initializer {
-            MapViewModel(smogometrApplication().container.measurementRepository)
+            MapViewModel(smogometrApplication().container.measurementRepository, smogometrApplication().container.locationLiveData)
         }
         initializer {
-            DynamicMeasurementViewModel(smogometrApplication().container.measurementRepository)
+            DynamicMeasurementViewModel(smogometrApplication().container.measurementRepository, smogometrApplication().container.locationLiveData)
         }
     }
 }

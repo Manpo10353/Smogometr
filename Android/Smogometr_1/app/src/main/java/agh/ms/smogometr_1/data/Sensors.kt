@@ -14,3 +14,6 @@ val sensors = listOf(
     Sensor(2, 25, true, listOf( "NOx" to true, "SOx" to false, "PM" to true, "Benzo(a)pyrene" to false)),
     Sensor(3, 4, true, listOf( "NOx" to true, "SOx" to false, "PM" to true, "Benzo(a)pyrene" to false)),
 )
+val sensorConnected : Sensor = (
+    Sensor(4, 95, true, listOf( "NOx" to true, "SOx" to false, "PM" to true, "Benzo(a)pyrene" to false))
+)

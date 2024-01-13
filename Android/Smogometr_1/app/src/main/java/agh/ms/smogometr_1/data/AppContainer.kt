@@ -7,12 +7,16 @@ import android.content.Context
 
 interface AppContainer {
     val measurementRepository: MeasurementRepository
+    val locationLiveData: LocationLiveData
 }
 
 class AppDataContainer(private val context: Context) : AppContainer {
 
     override val measurementRepository: MeasurementRepository by lazy {
         OfflineMeasurementRepository(MeasurementDatabase.getDatabase(context).measurementDao())
+    }
+    override val locationLiveData: LocationLiveData by lazy {
+        LocationLiveData(context)
     }
 
 }

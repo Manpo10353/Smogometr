@@ -16,6 +16,7 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -36,7 +37,7 @@ fun DynamicMeasurementScreen(
 ) {
     val viewModel: DynamicMeasurementViewModel = viewModel(factory = AppViewModelProvider.Factory)
     //val sensorDataStore: SensorDataStore = SensorDataStoreImpl(/*dataStore instance*/)
-    var sensorState by remember { mutableStateOf(SensorState()) }
+    val locationLiveDataM by viewModel.locationLiveDataM.observeAsState()
 
     Column(
         modifier = Modifier
@@ -45,32 +46,50 @@ fun DynamicMeasurementScreen(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        SensorCheckbox("PPM2.5", sensorState.ppm25Checked)//, {sensorState.ppm25Checked = it })/*
-        SensorCheckbox("PPM10", sensorState.ppm10Checked)//, {
-        //      viewModel.updateSensorState(sensorState.copy(ppm10Checked = it))
-        // })
-        SensorCheckbox("NOx", sensorState.noxChecked)//, {
-        //   viewModel.updateSensorState(sensorState.copy(noxChecked = it))
-        // })
-        SensorCheckbox("SOx", sensorState.soxChecked)//, {
-        //     viewModel.updateSensorState(sensorState.copy(soxChecked = it))
-        //}
-//*/
-        SliderDistance()
+        SensorCheckbox(
+            "PPM2.5",
+            viewModel.sensorState.ppm25Checked,
+            { isChecked -> viewModel.updateSensorState(viewModel.sensorState.copy(ppm25Checked = isChecked))}
+        )
+        SensorCheckbox(
+            "PPM10",
+            viewModel.sensorState.ppm10Checked,
+            { isChecked -> viewModel.updateSensorState(viewModel.sensorState.copy(ppm10Checked = isChecked))})
+        SensorCheckbox(
+            "NOx",
+            viewModel.sensorState.noxChecked,
+            { isChecked -> viewModel.updateSensorState(viewModel.sensorState.copy(noxChecked = isChecked))}
+        )
+        SensorCheckbox(
+            "SOx",
+            viewModel.sensorState.soxChecked,
+            { isChecked -> viewModel.updateSensorState(viewModel.sensorState.copy(soxChecked = isChecked))}
+        )
+
+        SliderDistance(
+            viewModel.sliderPosition,
+            onSliderValueChange = { newSliderPosition -> viewModel.updateSliderPosition(newSliderPosition) }
+        )
         Button(
-            onClick = {viewModel.addRandomMeasurement() },
+            onClick = {viewModel.startMeasure() },
             modifier = Modifier
                 .size(200.dp)
                 .clip(CircleShape)
         ) {
             Text(text = stringResource(R.string.start_meausure))
+
+
         }
+        Text(text = "$locationLiveDataM")
     }
 }
 
 @Composable
-fun SliderDistance() {
-    var sliderPosition by remember { mutableFloatStateOf(0f) }
+fun SliderDistance(
+    sliderPosition: Float,
+    onSliderValueChange: (Float) -> Unit
+) {
+
     Column (
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
@@ -82,7 +101,7 @@ fun SliderDistance() {
         )
         Slider(
             value = sliderPosition,
-            onValueChange = { sliderPosition = it },
+            onValueChange = { onSliderValueChange(it) },
             valueRange = 5f..100f,
             steps = 18
         )
@@ -96,8 +115,8 @@ fun SliderDistance() {
 @Composable
 fun SensorCheckbox(
     text: String,
-    isChecked: Boolean,
-    //onCheckedChange: (Boolean) -> Unit ,
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit ,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -113,8 +132,8 @@ fun SensorCheckbox(
                 .weight(1f)
         )
         Switch(
-            checked = isChecked,
-            onCheckedChange = {}
+            checked = checked,
+            onCheckedChange = onCheckedChange
         )
     }
 }

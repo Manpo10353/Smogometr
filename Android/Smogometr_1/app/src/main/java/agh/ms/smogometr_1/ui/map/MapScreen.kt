@@ -13,6 +13,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -24,6 +25,15 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.Circle
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.rememberCameraPositionState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.getValue
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.liveData
+import androidx.lifecycle.viewModelScope
+import com.google.maps.android.compose.CameraPositionState
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
 fun MapScreen(
@@ -31,13 +41,19 @@ fun MapScreen(
     modifier: Modifier = Modifier,
 ) {
 
-    val aghA0 = LatLng(50.064504, 19.923284)
+    val myLocation by viewModel.getLocationLiveData().observeAsState()
     val cameraPositionState = rememberCameraPositionState {
-        position = CameraPosition.fromLatLngZoom(aghA0, 10f)
+        myLocation?.let {
+            position = CameraPosition.fromLatLngZoom(
+                LatLng(it.latitude.toDouble(), it.longitude.toDouble()), 15f
+            )
+        }
     }
     val selectedColor by viewModel.selectedColor.collectAsState()
     val activeButton by viewModel.activeButton.collectAsState()
-    val measurementUiState by viewModel.measurementUiStates.collectAsState()
+    val measurementsUiState by viewModel.measurementsUiStates.collectAsState()
+
+    //viewModel.deleteAllMeasurements()
 
     Column(
         modifier = Modifier
@@ -130,15 +146,15 @@ fun MapScreen(
         }
 
         GoogleMap(
-            modifier = Modifier
-                .fillMaxSize(),
+            modifier = Modifier.fillMaxSize(),
             cameraPositionState = cameraPositionState
-        ) {
-            measurementUiState.forEach { measurementUiState ->
+        )
+        {
+            measurementsUiState.forEach { measurementUiState ->
                 Circle(
-                    center = LatLng(50.0645, 19.9232),//measurementUiState.latLng,
+                    center =  measurementUiState.latLng,
                     radius = 10.0,
-                    fillColor = measurementUiState.ppm25Color,
+                    fillColor = Color.Red,//measurementUiState.ppm25Color,
                     strokeWidth = 1.0f
                 )
             }
@@ -150,3 +166,11 @@ fun MapScreen(
 fun MapScreenPreview() {
     //MapScreen(measurementRepository)
 }
+
+// LaunchedEffect(myLocation) {
+//     myLocation?.let {
+//         cameraPositionState.position = CameraPosition.fromLatLngZoom(
+//            LatLng(it.latitude.toDouble(), it.longitude.toDouble()), 15f
+//        )
+// }
+// }

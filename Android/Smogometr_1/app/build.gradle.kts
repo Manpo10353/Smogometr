@@ -12,7 +12,7 @@ android {
     defaultConfig {
         applicationId = "agh.ms.smogometr_1"
         minSdk = 26
-        targetSdk = 34
+        targetSdk = 33
         versionCode = 1
         versionName = "1.0"
 
@@ -52,6 +52,9 @@ android {
 }
 
 dependencies {
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.3.1")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1")
+    implementation("androidx.compose.runtime:runtime-livedata:1.0.5")
     //Data Store
     implementation("androidx.datastore:datastore-preferences:1.0.0")
     //Room
@@ -64,6 +67,7 @@ dependencies {
 
     // google map services
     implementation ("com.google.android.gms:play-services-maps:18.2.0")
+    //google location
     implementation ("com.google.android.gms:play-services-location:21.0.1")
 
     // google maps utils
@@ -90,5 +94,6 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
+
 }
 

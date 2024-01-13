@@ -8,7 +8,7 @@ import java.util.Date
 
 data class MeasurementUiState(
     val id: Int = 0,
-    //val latLng: LatLng,
+    val latLng: LatLng,
     //val date: Date,
     val ppm25: Double,
     val ppm10: Double,

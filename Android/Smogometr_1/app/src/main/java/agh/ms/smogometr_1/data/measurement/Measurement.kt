@@ -10,12 +10,11 @@ import java.time.LocalTime
 import java.util.Date
 
 @Entity(tableName = "measurements")
+@TypeConverters(Converters::class)
 data class Measurement(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
-    //@TypeConverters(Converters::class)
-    //val latLng: LatLng,
-    //@TypeConverters(Converters::class)
+    val latLng: LatLng,
     //val date: Date,
     val ppm25: Double,
     val ppm10: Double,

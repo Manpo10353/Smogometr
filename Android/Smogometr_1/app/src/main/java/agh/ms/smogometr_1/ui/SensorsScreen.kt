@@ -2,6 +2,7 @@ package agh.ms.smogometr_1.ui
 
 import agh.ms.smogometr_1.R
 import agh.ms.smogometr_1.data.Sensor
+import agh.ms.smogometr_1.data.sensorConnected
 import agh.ms.smogometr_1.data.sensors
 import agh.ms.smogometr_1.ui.theme.Smogometr_1Theme
 import androidx.compose.animation.animateContentSize
@@ -9,6 +10,7 @@ import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -58,14 +60,32 @@ import androidx.compose.material.icons.filled.CheckCircle
 fun SensorsScreen(
     modifier: Modifier = Modifier
 ) {
-    LazyColumn {
-        items(sensors) { sensor ->
-            SensorItem(
-                sensor = sensor,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(dimensionResource(id = R.dimen.padding_small))
-            )
+    Column {
+        Box {
+            Column {
+                Text(text = "Podłączone")
+                SensorItem(
+                    sensor = sensorConnected,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(dimensionResource(id = R.dimen.padding_small))
+                )
+            }
+        }
+        Box {
+            Column {
+                Text(text = "W pobliżu")
+                LazyColumn {
+                    items(sensors) { sensor ->
+                        SensorItem(
+                            sensor = sensor,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(dimensionResource(id = R.dimen.padding_small))
+                        )
+                    }
+                }
+            }
         }
     }
 }
@@ -164,7 +184,8 @@ fun SensorComponent(
             .padding(
                 start = dimensionResource(id = R.dimen.padding_small),
                 end = dimensionResource(id = R.dimen.padding_medium)
-                )
+                ),
+        verticalAlignment = Alignment.CenterVertically
     ){
         Text(text = type)
         Spacer(modifier = Modifier.weight(1f))
