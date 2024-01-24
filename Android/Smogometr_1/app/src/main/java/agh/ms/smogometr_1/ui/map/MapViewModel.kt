@@ -1,62 +1,85 @@
 package agh.ms.smogometr_1.ui.map
 
-import agh.ms.smogometr_1.data.LocationDetails
-import agh.ms.smogometr_1.data.LocationLiveData
+import agh.ms.smogometr_1.data.location.LocationClient
 import agh.ms.smogometr_1.data.measurement.Measurement
-import agh.ms.smogometr_1.data.measurement.MeasurementRepository
 import agh.ms.smogometr_1.data.measurement.MeasurementUiState
-import agh.ms.smogometr_1.ui.AppViewModel
+import android.location.Location
 import androidx.compose.ui.graphics.Color
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.android.gms.maps.model.LatLng
-import kotlinx.coroutines.Dispatchers
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.flatMap
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.time.LocalDate
 import java.time.LocalTime
-import java.util.Date
+import javax.inject.Inject
 
-class MapViewModel(
-    private val measurementRepository: MeasurementRepository,
-    private val locationLiveData: LocationLiveData
-) : ViewModel()
+@HiltViewModel
+class MapViewModel@Inject constructor(
+    private val locationClient: LocationClient
+) : ViewModel() {
 
-{
-    private val _selectedColor = MutableStateFlow<Color>(Color.Red)
+
+    private val _location = MutableStateFlow<Location?>(null)
+    val location: StateFlow<Location?> = _location
+
+    init {
+        viewModelScope.launch {
+            try {
+                locationClient.getLocationUpdates(2000).collect { location ->
+                    _location.value = location
+                }
+            } catch (e: LocationClient.LocationException) {
+                // Handle location exceptions
+            }
+        }
+    }
+
+    private val _selectedDate = MutableStateFlow<LocalDate?>(null)
+    val selectedDate: StateFlow<LocalDate?> get() = _selectedDate
+
+    private val _startTime = MutableStateFlow<LocalTime?>(LocalTime.now())
+    val startTime: StateFlow<LocalTime?> get() = _startTime
+
+    private val _endTime = MutableStateFlow<LocalTime?>(LocalTime.now().plusHours(1))
+    val endTime: StateFlow<LocalTime?> get() = _endTime
+
+
+    fun updateStartTime(startTime: LocalTime?) {
+        _startTime.value = startTime
+    }
+    fun updateEndTime(endTime: LocalTime) {
+        _endTime.value = endTime
+    }
+    fun updateSelectedDate(newDate: LocalDate?) {
+        _selectedDate.value = newDate
+    }
+
+
+
+    private val _selectedColor = MutableStateFlow(Color.Red)
     val selectedColor: StateFlow<Color> = _selectedColor
 
-    private val _activeButton = MutableStateFlow<ButtonType>(ButtonType.PM25)
+    private val _activeButton = MutableStateFlow(ButtonType.PM25)
     val activeButton: StateFlow<ButtonType> = _activeButton
 
-    private val _selectedDate = MutableStateFlow<Date?>(null)
-    val selectedDate: StateFlow<Date?> = _selectedDate
 
     private val _measurementsUiStates = MutableStateFlow<List<MeasurementUiState>>(emptyList())
     val measurementsUiStates: StateFlow<List<MeasurementUiState>> get() = _measurementsUiStates
 
-    private var _myLocation = MutableStateFlow<LocationDetails?>(null)
-    val myLocation: StateFlow<LocationDetails?> = _myLocation
 
-    fun getLocationLiveData() = locationLiveData
-    fun startLocationUpdates() = {
-        locationLiveData.startLocationUpdates()
-    }
+
+    //fun getLocationLiveData() = locationLiveData
+    //fun startLocationUpdates() = {
+    //    locationLiveData.startLocationUpdates()
+    //}
 
     init{
-        fetchDataBetweenHours()
+        //fetchDataBetweenHours()
     }
 
-    fun myLocation(){
-
-    }
-
+/*
     fun deleteAllMeasurements() {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
@@ -64,7 +87,7 @@ class MapViewModel(
             }
         }
     }
-
+*/
     fun Measurement.toMeasurementUiState(): MeasurementUiState {
         return MeasurementUiState(
             latLng = this.latLng,
@@ -72,13 +95,9 @@ class MapViewModel(
             ppm25 = this.ppm25,
             ppm10 = this.ppm10,
             nox = this.nox,
-            sox = this.sox,
-            temperature = this.temperature,
-            humidity = this.humidity,
             ppm25Color = Color.Red,//calculateColor(ppm25),
             ppm10Color = Color.Red,//calculateColor(ppm10),
             noxColor = Color.Red,//calculateColor(nox),
-            soxColor = Color.Red,//calculateColor(sox)
         )
     }
 
@@ -101,10 +120,9 @@ class MapViewModel(
         )
     }
 
-    // Zakres wartości
     private val minValue = 0.0
     private val maxValue = 10.0
-
+/*
     fun fetchDataBetweenHours(/*date: LocalDate, timeStart: LocalTime, timeEnd: LocalTime*/) {
         viewModelScope.launch {
             try {
@@ -117,8 +135,10 @@ class MapViewModel(
             }
         }
     }
-    // fun getColorForButton(buttonType: ButtonType) {
-    /*   viewModelScope.launch {
+
+ */
+     fun changeActiveButton(buttonType: ButtonType) {
+       viewModelScope.launch {
             _selectedColor.value = when (buttonType) {
                 ButtonType.PM25 -> Color.Blue
                 ButtonType.PM10 -> Color.Blue
@@ -129,16 +149,18 @@ class MapViewModel(
         }
     }
 
+/*
     fun setSelectedDate(date: Date) {
         viewModelScope.launch {
             _selectedDate.value = date
         }
     }
+     
+ */
+}
 
 
-}
-*/
-}
+
 enum class ButtonType {
     PM25,
     PM10,

@@ -13,12 +13,8 @@ data class MeasurementUiState(
     val ppm25: Double,
     val ppm10: Double,
     val nox: Double,
-    val sox: Double,
-    val temperature: Double,
-    val humidity: Double,
     //circle colors depends on norm
     val ppm25Color: Color,
     val ppm10Color: Color,
     val noxColor: Color,
-    val soxColor: Color,
 )

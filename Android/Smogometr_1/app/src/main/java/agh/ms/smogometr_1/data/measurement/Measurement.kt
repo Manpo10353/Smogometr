@@ -19,7 +19,4 @@ data class Measurement(
     val ppm25: Double,
     val ppm10: Double,
     val nox: Double,
-    val sox: Double,
-    val temperature: Double,
-    val humidity: Double,
 )

@@ -12,4 +12,14 @@
     <string name="pomiar">Pomiar %1$s</string>
     <string name="distance_betwen_sensors">Odległość pomiędzy kolejnymi pomiarami w metrach</string>
     <string name="start_meausure">Rozpocznij pomiar</string>
+    <string name="select_date">Wybierz datę</string>
+    <string name="cancel">Anuluj</string>
+    <string name="choose_time">Wybierz godzinę</string>
+    <string name="ok">OK</string>
+    <string name="pm2_5">PM2.5</string>
+    <string name="pm10">PM10</string>
+    <string name="nox">NOx</string>
+    <string name="ble_permission">Brak zgody na Bluetooth</string>
+    <string name="try_again">Spróbuj połączyć ponownie</string>
+    <string name="connect_again">Połącz ponownie</string>
 </resources>

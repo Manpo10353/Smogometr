@@ -1,7 +1,6 @@
 package agh.ms.smogometr_1
 
-import agh.ms.smogometr_1.ui.measurement.SensorState
-import android.location.Location
+import agh.ms.smogometr_1.data.sensors.SensorState
 import com.google.android.gms.maps.model.LatLng
 import java.lang.Math.atan2
 import java.lang.Math.cos
