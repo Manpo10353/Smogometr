@@ -4,9 +4,10 @@ package agh.ms.smogometr_1.ui.measurement
 
 import agh.ms.smogometr_1.R
 import agh.ms.smogometr_1.data.ConnectionState
-import agh.ms.smogometr_1.data.measurement.PermissionUtils
+import agh.ms.smogometr_1.permission.PermissionUtils
 import agh.ms.smogometr_1.data.sensors.Sensor
 import agh.ms.smogometr_1.ui.theme.md_theme_light_primary
+import android.util.Log
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
@@ -74,6 +75,11 @@ fun MeasurementScreen() {
     val lifecycleOwner = LocalLifecycleOwner.current
     val bleConnectionState = viewModel.connectionState
     val myLocation by viewModel.location.collectAsState()
+    val isMeasuring by viewModel.isMeasuring.collectAsState()
+    val pm25 = viewModel.pm25
+    val pm10 = viewModel.pm10
+    val nox = viewModel.nox
+    val humidity = viewModel.humidity
 
     DisposableEffect(
         key1 = lifecycleOwner,
@@ -108,9 +114,12 @@ fun MeasurementScreen() {
     }
 
     LaunchedEffect(myLocation) {
-        myLocation?.let { newLocation ->
-            // Wykonaj operacje w zależności od nowej lokalizacji
-            // ...
+        if(isMeasuring) {
+                if(viewModel.checkDistance()){
+                    viewModel.sendMessage()
+                    Log.d("location",myLocation.toString())
+                }
+            else Log.d("location","za blisko")
         }
     }
 
@@ -174,12 +183,7 @@ fun MeasurementScreen() {
                     }
                 } else if (bleConnectionState == ConnectionState.Connected) {
                     SensorItem(
-                        sensor = Sensor(
-                            "Smogometr",
-                            "42:42",
-                            true,
-                            listOf("PM 2.5" to true,"PM 10" to true, "NOx" to true)
-                        )
+                        sensor = viewModel.smogometr
                     )
                 } else if (bleConnectionState == ConnectionState.Disconnected) {
                     Button(
@@ -233,7 +237,13 @@ fun MeasurementScreen() {
 
             }
         }
+
         Text(text = myLocation.toString())
+        Text(text = pm25.toString())
+        Text(text = pm10.toString())
+        Text(text = nox.toString())
+        Text(text = humidity.toString())
+
         Spacer(
             modifier = Modifier
                 .weight(2f)
@@ -446,7 +456,7 @@ fun SensorImage(
 }
 
 
-//@Preview(showBackground = true, showSystemUi = true)
+@Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun MeasurementScreenPreview() {
     MeasurementScreen()

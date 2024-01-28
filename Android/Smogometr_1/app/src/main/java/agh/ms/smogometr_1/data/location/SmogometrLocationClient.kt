@@ -1,5 +1,6 @@
 package agh.ms.smogometr_1.data.location
 
+import agh.ms.smogometr_1.R
 import android.annotation.SuppressLint
 import android.content.Context
 import android.location.Location
@@ -26,18 +27,20 @@ class SmogometrLocationClient @Inject constructor(
     override fun getLocationUpdates(interval: Long): Flow<Location> {
         return callbackFlow{
             if(!context.hasLocationPermission()) {
-                throw LocationClient.LocationException("Missing location permission")
+                throw LocationClient.LocationException(context.getString(R.string.missing_permission))
             }
 
             val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
             val isGpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
             val isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
             if(!isGpsEnabled && !isNetworkEnabled) {
-                throw LocationClient.LocationException("GPS is disabled")
+                throw LocationClient.LocationException("GPS jest nieaktywny")
             }
+
             val request = LocationRequest.create()
                 .setInterval(interval)
                 .setFastestInterval(interval)
+                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
 
             val locationCallback = object : LocationCallback() {
                 override fun onLocationResult(result: LocationResult) {
@@ -57,6 +60,9 @@ class SmogometrLocationClient @Inject constructor(
             awaitClose {
                 client.removeLocationUpdates(locationCallback)
             }
+
         }
+
     }
+
 }

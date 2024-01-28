@@ -1,6 +1,6 @@
-package agh.ms.smogometr_1.data.measurement
+package agh.ms.smogometr_1.data.ble
 
-import agh.ms.smogometr_1.util.Resource
+import agh.ms.smogometr_1.data.measurement.MeasurementResult
 import kotlinx.coroutines.flow.MutableSharedFlow
 
 interface MeasurementReceiverManager {
@@ -12,6 +12,8 @@ interface MeasurementReceiverManager {
     fun disconnect()
 
     fun startReceiving()
+
+    fun sendMessage(byteArray: ByteArray)
 
     fun closeConnection()
 }

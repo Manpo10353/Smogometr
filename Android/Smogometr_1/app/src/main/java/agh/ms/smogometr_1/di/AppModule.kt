@@ -3,7 +3,7 @@ package agh.ms.smogometr_1.di
 import agh.ms.smogometr_1.data.ble.MeasurementBLEReceiverManager
 import agh.ms.smogometr_1.data.location.LocationClient
 import agh.ms.smogometr_1.data.location.SmogometrLocationClient
-import agh.ms.smogometr_1.data.measurement.MeasurementReceiverManager
+import agh.ms.smogometr_1.data.ble.MeasurementReceiverManager
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothManager
 import android.content.Context

@@ -1,10 +1,10 @@
 package agh.ms.smogometr_1.ui.map
 
 import agh.ms.smogometr_1.R
-import agh.ms.smogometr_1.ui.measurement.MeasurementViewModel
 import agh.ms.smogometr_1.ui.theme.md_theme_light_background
 import agh.ms.smogometr_1.ui.theme.md_theme_light_primary
 import agh.ms.smogometr_1.ui.theme.md_theme_light_tertiary
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -30,12 +30,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TimePicker
 import androidx.compose.material3.TimePickerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.maps.android.compose.Circle
 import com.google.maps.android.compose.GoogleMap
 import androidx.compose.runtime.mutableStateOf
@@ -66,17 +64,14 @@ fun MapScreen(
 
     val myLocation by viewModel.location.collectAsState()
 
+
+    //poprawić, przenieść do viewModel, tak aby tylko raz się ładowało
     val cameraPositionState = rememberCameraPositionState()
-
-    LaunchedEffect(myLocation) {
-        myLocation?.let {
-            cameraPositionState.position = CameraPosition.fromLatLngZoom(
-                LatLng(it.latitude, it.longitude), 15f
-            )
-        }
+    myLocation?.let {
+        cameraPositionState.position = CameraPosition.fromLatLngZoom(
+            LatLng(it.latitude, it.longitude), 15f
+        )
     }
-
-    //val selectedColor by viewModel.selectedColor.collectAsState()
     val activeButton by viewModel.activeButton.collectAsState()
     val measurementsUiState by viewModel.measurementsUiStates.collectAsState()
     val selectedDate by viewModel.selectedDate.collectAsState()
@@ -109,7 +104,6 @@ fun MapScreen(
                 .background(color = Color(md_theme_light_background.toArgb()))
         ) {
             Column {
-                Text(text = myLocation.toString())
                 Row(
                     modifier = Modifier
                         .fillMaxWidth(),
@@ -215,12 +209,14 @@ fun MapScreen(
             cameraPositionState = cameraPositionState
         )
         {
+            Log.d("db","${measurementsUiState.size}")
             measurementsUiState.forEach { measurementUiState ->
                 Circle(
-                    center = measurementUiState.latLng,
+                    center = LatLng(measurementUiState.latitude,measurementUiState.longitude),
                     radius = 10.0,
-                    fillColor = Color.Red,//measurementUiState.ppm25Color,
-                    strokeWidth = 1.0f
+                    fillColor = viewModel.calculateFillColor(measurementUiState),
+                    strokeWidth = 5f,
+                    strokeColor = viewModel.calculateStrokeColor(measurementUiState)
                 )
             }
         }

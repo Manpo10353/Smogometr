@@ -1,25 +1,32 @@
 package agh.ms.smogometr_1.ui.measurement
 
-import agh.ms.smogometr_1.StartMeasure
 import agh.ms.smogometr_1.data.ConnectionState
 import agh.ms.smogometr_1.data.location.LocationClient
-import agh.ms.smogometr_1.data.measurement.MeasurementReceiverManager
+import agh.ms.smogometr_1.data.measurement.Measurement
+import agh.ms.smogometr_1.data.ble.MeasurementReceiverManager
 import agh.ms.smogometr_1.data.sensors.Sensor
-import agh.ms.smogometr_1.data.sensors.SensorState
-import agh.ms.smogometr_1.util.Resource
+import agh.ms.smogometr_1.data.ble.Resource
 import android.location.Location
+import android.util.Log
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.android.gms.maps.model.LatLng
+import com.google.firebase.database.FirebaseDatabase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import java.time.LocalTime
 import javax.inject.Inject
+import kotlin.math.atan2
+import kotlin.math.cos
 import kotlin.math.pow
+import kotlin.math.sin
+import kotlin.math.sqrt
+
 @HiltViewModel
 class MeasurementViewModel@Inject constructor(
     private val measurementReceiverManager: MeasurementReceiverManager,
@@ -29,12 +36,19 @@ class MeasurementViewModel@Inject constructor(
     private val _location = MutableStateFlow<Location?>(null)
     val location: StateFlow<Location?> = _location
 
-    private val startLocation: Location? = null
+    private var startLocation: Location? = null
+
+
+    val smogometr:Sensor = Sensor(
+        "Smogometr",
+        listOf("PM 2.5" to true,"PM 10" to true, "NOx" to true),
+        true
+    )
 
     init {
         viewModelScope.launch {
             try {
-                locationClient.getLocationUpdates(2000).collect { location ->
+                locationClient.getLocationUpdates(1000).collect { location ->
                     _location.value = location
                 }
             } catch (e: LocationClient.LocationException) {
@@ -49,14 +63,7 @@ class MeasurementViewModel@Inject constructor(
     private val _buttonText = MutableStateFlow("Rozpocznij pomiar")
     val buttonText: StateFlow<String> get() = _buttonText
 
-    var sensorState by mutableStateOf(SensorState())
-
-    var sensor by mutableStateOf<Sensor?>(null)
-        private set
-    fun updateSensorState(newSensorState: SensorState) {
-        sensorState = newSensorState
-    }
-    var sliderPosition by mutableStateOf(5f)
+    var sliderPosition by mutableFloatStateOf(5f)
     fun updateSliderPosition(newSliderPosition: Float) {
         sliderPosition = newSliderPosition
     }
@@ -68,13 +75,21 @@ class MeasurementViewModel@Inject constructor(
     var errorMessage by mutableStateOf<String?>(null)
         private set
 
-    var pm25 by mutableStateOf(0f)
+    private val _startTime = MutableStateFlow<LocalTime?>(LocalTime.now())
+    val startTime: StateFlow<LocalTime?> get() = _startTime
+
+    var pm25 by mutableStateOf(0)
         private set
-    var pm10 by mutableStateOf(0f)
+    var pm10 by mutableStateOf(0)
         private set
     var nox by mutableStateOf(0f)
         private set
+    var humidity by mutableStateOf(0f)
+        private set
 
+    fun sendMessage() {
+        measurementReceiverManager.sendMessage("measure".toByteArray())
+    }
 
     private fun subscribeToChange(){
         viewModelScope.launch {
@@ -85,6 +100,17 @@ class MeasurementViewModel@Inject constructor(
                         pm25 = result.data.pm25
                         pm10= result.data.pm10
                         nox = result.data.nox
+                        humidity = result.data.humidity
+                        Log.d("ble","odebrano")
+                        addMeasurement(
+                            latitude=startLocation!!.latitude,
+                            longitude=startLocation!!.longitude,
+                            pm25 = pm25,
+                            pm10 = pm10,
+                            nox = nox,
+                            humidity = humidity
+                        )
+                        startLocation = location.value
                     }
                     is Resource.Loading -> {
                         initializingMessage = result.message
@@ -123,30 +149,15 @@ class MeasurementViewModel@Inject constructor(
                 _isMeasuring.value = false
                 _buttonText.value = "Rozpocznij pomiar"
             } else {
-                _isMeasuring.value = true
                 _buttonText.value = "Trwa pomiar, naciśnij aby zakończyć"
-                startMeasure()
+                startLocation = location.value
+                sendMessage()
+                _isMeasuring.value = true
             }
         }
     }
 
-
-    fun startMeasure() {
-        val measurement = StartMeasure()
-        measurement.beginMeasurement(sliderPosition,sensorState)
-    }
-
-    ////////////////////
-    fun beginMeasurement(sliderPosition: Float, sensorState: SensorState) {
-        // val transferDataBLE = transferDataBLE()
-        val presentLocation: LatLng = LatLng(0.0,0.0) //początkowa,
-        val actualLocation: LatLng = LatLng(0.0,0.0)//do zmiany na stateflow
-        // if (areLocationsFarEnough(presentLocation,actualLocation,sliderPosition)):
-        //transferDataBLE.send(sensorState)
-
-    }
-
-    fun haversineDistance(location1: LatLng, location2: LatLng): Double {
+    private fun haversineDistance(location1: Location, location2: Location): Double {
         val earthRadius = 6371000.0
 
         val lat1Rad = Math.toRadians(location1.latitude)
@@ -157,73 +168,49 @@ class MeasurementViewModel@Inject constructor(
         val dLat = lat2Rad - lat1Rad
         val dLon = lon2Rad - lon1Rad
 
-        val a = Math.sin(dLat / 2)
-            .pow(2) + Math.cos(lat1Rad) * Math.cos(lat2Rad) * Math.sin(dLon / 2).pow(2)
-        val c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+        val a = sin(dLat / 2)
+            .pow(2) + cos(lat1Rad) * cos(lat2Rad) * sin(dLon / 2).pow(2)
+        val c = 2 * atan2(sqrt(a), sqrt(1 - a))
 
         return earthRadius * c
     }
 
-    fun areLocationsFarEnough(location1: LatLng, location2: LatLng, minDistance: Float): Boolean {
-        val actualDistance = haversineDistance(location1, location2)
-        return actualDistance >= minDistance
+    fun checkDistance(): Boolean {
+        val distance = haversineDistance(startLocation!!, location.value!!)
+        Log.d("distance","${distance}")
+        Log.d("slider","${sliderPosition}")
+        return distance >= sliderPosition
     }
-    /////////////////
 
+    fun addMeasurement(
+        latitude: Double,
+        longitude:Double,
+        pm25: Int,
+        pm10: Int,
+        nox: Float,
+        humidity: Float
+    ) {
+        Log.d("db","uruchomiono dodawanie")
+        val database = FirebaseDatabase.getInstance("https://smogometr-1-default-rtdb.europe-west1.firebasedatabase.app")
+        val reference = database.getReference("measurements")
+        val measurementId = reference.push().key
 
-/*
-    suspend fun startMeasure() {
-
-        var prevLocation: LatLng = locationLiveData.value?.let {
-            LatLng(it.latitude.toDouble(), it.longitude.toDouble())
-        } ?: LatLng(0.0, 0.0)
-
-        while (prevLocation == null || prevLocation == LatLng(0.0, 0.0)) {
-            // Pobierz nową wartość locationLiveData i zaktualizuj prevLocation
-            locationLiveData.value?.let {
-                prevLocation = LatLng(it.latitude.toDouble(), it.longitude.toDouble())
-            }
-        }
-        addRandomMeasurement(prevLocation)
-        Log.d("measure","dodano 1")
-
-        while (_isMeasuring.value) {
-            Log.d("measure","w petli")
-            var currentLocation = locationLiveData.value?.let {
-                LatLng(it.latitude.toDouble(), it.longitude.toDouble())
-            }
-            if (currentLocation != null) {
-                if (areLocationsFarEnough(currentLocation, prevLocation, sliderPosition)) {
-                    addRandomMeasurement(currentLocation)
-                    Log.d("measure","dodano kolejny")
-                }
-                currentLocation.also { prevLocation = it }
-            } else {
-                Log.d("measure","za blisko")
-                // Możesz tutaj obsłużyć sytuację, gdy wartość lokalizacji jest null
-                // Na przykład, możesz zalogować błąd lub wyświetlić komunikat do użytkownika.
-            }
-            delay(2000)
-        }
-    }
-*/
-    /*
-    fun addRandomMeasurement(currentLocation: LatLng) {
-        val randomMeasurement = Measurement(
-            ppm25 = getRandomDouble(),
-            ppm10 = getRandomDouble(),
-            nox = getRandomDouble(),
-            latLng = LatLng(currentLocation.latitude,currentLocation.longitude)
+        val newMeasurement = Measurement(
+            measurementId,
+            latitude,
+            longitude,
+            pm25,
+            pm10,
+            nox,
+            humidity
         )
-
-        viewModelScope.launch {
-            try {
-                measurementRepository.insertMeasurment(randomMeasurement)
-            } catch (e: Exception) {
-                // Handle exceptions, e.g., log or display an error message
+        reference.child(measurementId!!).setValue(newMeasurement)
+            .addOnSuccessListener {
+                Log.d("db","Dodano nowy pomiar do bazy danych.")
             }
-        }
+            .addOnFailureListener { e ->
+                Log.d("db","Błąd podczas dodawania pomiaru: $e")
+            }
     }
-*/
 
 }

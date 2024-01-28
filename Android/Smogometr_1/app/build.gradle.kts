@@ -5,6 +5,7 @@ plugins {
     id("com.google.devtools.ksp") version "1.9.20-1.0.13"
     id("kotlin-kapt")
     id("com.google.dagger.hilt.android")
+    id("com.google.gms.google-services")
 
 }
 
@@ -60,6 +61,8 @@ kapt {
 dependencies {
     implementation("com.google.accompanist:accompanist-permissions:0.21.1-beta")
     implementation("com.google.dagger:hilt-android:2.46")
+    implementation(platform("com.google.firebase:firebase-bom:32.7.1"))
+    implementation("com.google.firebase:firebase-database")
     kapt("com.google.dagger:hilt-android-compiler:2.46")
     //kapt("com.google.dagger:hilt-compiler:2.38.1")
     kapt("androidx.hilt:hilt-compiler:1.0.0")
@@ -80,6 +83,7 @@ dependencies {
 
     // google map services
     implementation ("com.google.android.gms:play-services-maps:18.2.0")
+    //implementation("com.google.android.gms:play-services:latest_version")
     //google location
     implementation ("com.google.android.gms:play-services-location:21.0.1")
 

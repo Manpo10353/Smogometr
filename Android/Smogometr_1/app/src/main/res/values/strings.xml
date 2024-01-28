@@ -22,4 +22,5 @@
     <string name="ble_permission">Brak zgody na Bluetooth</string>
     <string name="try_again">Spróbuj połączyć ponownie</string>
     <string name="connect_again">Połącz ponownie</string>
+    <string name="missing_permission">Brak zezwoleń</string>
 </resources>

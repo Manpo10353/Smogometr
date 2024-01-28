@@ -1,5 +1,6 @@
 package agh.ms.smogometr_1.data.measurement
 
+import android.location.Location
 import androidx.compose.ui.graphics.Color
 import com.google.android.gms.maps.model.LatLng
 import java.time.LocalDate
@@ -8,13 +9,10 @@ import java.util.Date
 
 data class MeasurementUiState(
     val id: Int = 0,
-    val latLng: LatLng,
-    //val date: Date,
-    val ppm25: Double,
-    val ppm10: Double,
-    val nox: Double,
-    //circle colors depends on norm
-    val ppm25Color: Color,
-    val ppm10Color: Color,
-    val noxColor: Color,
+    val latitude: Double,
+    val longitude:Double,
+    val pm25: Int,
+    val pm10: Int,
+    val nox: Float,
+    val humidity:Float,
 )
